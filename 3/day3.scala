@@ -41,18 +41,33 @@ def updateMap(m: Map[Point,Integer], p: Point): Map[Point,Integer] = {
 }
 
 var m = Map[Point, Integer]()
-var cp = Point(0, 0)
+var p1 = Point(0, 0)
+var p2 = Point(0, 0)
 val filename = "input.txt"
+var i = 1
 for (line <- Source.fromFile(filename).getLines) {
   for (c <- line) {
-    println(cp)
-    m = updateMap(m, cp)
-    println(c)
-    cp = cp.nextPoint(c)
+    if ((i % 2) == 1) {
+      m = updateMap(m, p1)
+      println(i.toString + " p1 " + p1.toString + " " + c)
+      p1 = p1.nextPoint(c)
+    }
+    else {
+      m = updateMap(m, p2)
+      println(i.toString + " p2 " + p2.toString + " " + c)
+      p2 = p2.nextPoint(c)
+    }
+    i += 1
   }
 }
-println(cp)
-m = updateMap(m, cp)
+if ((i % 2) == 1) {
+  m = updateMap(m, p1)
+  println(i.toString + " p1 " + p1.toString + " ")
+}
+else {
+  m = updateMap(m, p2)
+  println(i.toString + " p2 " + p2.toString + " ")
+}
 
 val xmin = m.keys.map(_.x).min
 val xmax = m.keys.map(_.x).max
@@ -63,7 +78,7 @@ for (y <- ymax until ymin-1 by -1) {
   for (x <- xmin until xmax+1) {
     m.get(Point(x,y)) match {
       case Some(c) => print("#")
-      case None => print(".")
+      case None => if ( x == 0 ) print("|") else if ( y == 0 ) print("-") else print(".")
     }
   }
   println("")
