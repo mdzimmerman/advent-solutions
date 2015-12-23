@@ -25,25 +25,43 @@ def isBlackList(s: String) = {
   blackList.contains(s)
 }
 
-var total = 0
-val filename = "input.txt"
-for (line <- Source.fromFile(filename).getLines) {
-  print(line)
+def part1(filename: String) = {
+  var total = 0
+  for (line <- Source.fromFile(filename).getLines) {
+    print(line)
 
-  val hasDouble = line.sliding(2).toList.exists(x => doubledChars(x))
-  print(" %5s".format(hasDouble))
+    val hasDouble = line.sliding(2).toList.exists(x => doubledChars(x))
+    print(" %5s".format(hasDouble))
 
-  val count = line.toList.map(isVowel(_)).sum
-  val hasEnoughVowels = (count >= 3)
-  print(" %2d %5s".format(count, hasEnoughVowels))
+    val count = line.toList.map(isVowel(_)).sum
+    val hasEnoughVowels = (count >= 3)
+    print(" %2d %5s".format(count, hasEnoughVowels))
 
-  val hasBlackList = line.sliding(2).toList.exists(x => isBlackList(x))
-  print(" %5s".format(hasBlackList))
+    val hasBlackList = line.sliding(2).toList.exists(x => isBlackList(x))
+    print(" %5s".format(hasBlackList))
 
-  println()
+    println()
 
-  if (hasDouble && hasEnoughVowels && !hasBlackList)
-    total += 1
+    if (hasDouble && hasEnoughVowels && !hasBlackList)
+      total += 1
+  }
+
+  println("Total: %d".format(total))
 }
 
-println(total)
+def part2(filename: String) = {
+  for (line <- Source.fromFile(filename).getLines) {
+    println(line)
+    val l = line.length
+    for (i <- (0 until l-3)) {
+      print(line.substring(i,i+2)+": ")
+      for (j <- (i+2 until l-1)) {
+        print(line.substring(j,j+2)+" ")
+      }
+      println()
+    }
+  }
+}
+
+//part1("input.txt")
+part2("input.txt")
