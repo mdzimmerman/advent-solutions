@@ -1,5 +1,14 @@
 import re
 import numpy as np
+import itertools
+
+def distance(permute, cost):
+    n0 = permute[0]
+    dist = 0
+    for n in permute[1:]:
+        dist += cost[n0,n]
+        n0 = n
+    return dist
 
 linere = re.compile("(\w+) to (\w+) = (\d+)")
 
@@ -28,5 +37,22 @@ with open(f, "r") as fh:
             #print c2
             #print cost
 
-print city
-print c
+minp=None
+mindist=distance(range(0,8), c)
+maxp=None
+maxdist=0
+
+i = 0
+for p in itertools.permutations(range(0,8),8):
+    dist = distance(p, c)
+    if dist < mindist:
+        mindist = dist
+        minp = p
+    elif dist > maxdist:
+        maxdist = dist
+        maxp = p
+    print i, p, dist
+    i += 1
+
+print "min:", minp, mindist
+print "max:", maxp, maxdist
