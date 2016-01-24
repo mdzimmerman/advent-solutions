@@ -40,32 +40,15 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/scala</sourceDirectory>
-        <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <configuration>
-                    <scalaVersion>${scala.version}</scalaVersion>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>
