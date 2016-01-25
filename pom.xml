@@ -7,6 +7,7 @@
     <version>1.0-SNAPSHOT</version>
     <inceptionYear>2008</inceptionYear>
     <modules>
+        <module>5</module>
         <module>6</module>
     </modules>
     <properties>

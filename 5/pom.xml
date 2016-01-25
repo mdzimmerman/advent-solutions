@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>advent-day6</artifactId>
+    <artifactId>advent-day5</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <repositories>
@@ -30,12 +30,6 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.4</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

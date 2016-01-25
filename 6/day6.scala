@@ -1,13 +1,7 @@
-package org.triclinic.advent
 
 import java.awt._
-
 import scala.io.Source
 
-/**
- * Hello world!
- *
- */
 object Day6 extends App {
   //readInput()
   //drawArray()
