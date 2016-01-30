@@ -1,5 +1,3 @@
-package org.triclinic
-
 import org.junit._
 import Assert._
 
