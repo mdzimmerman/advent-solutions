@@ -15,4 +15,5 @@ for line in fh:
             print "%d %s %3d" % (n, c, floor)
         n += 1
 
+print "final = %d" % floor
 
