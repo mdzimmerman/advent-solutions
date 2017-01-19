@@ -33,6 +33,7 @@ object Point {
   }
 }
 
+
 def updateMap(m: Map[Point,Integer], p: Point): Map[Point,Integer] = {
   m.get(p) match {
     case Some(c) => m + (p -> (c+1))
@@ -43,10 +44,12 @@ def updateMap(m: Map[Point,Integer], p: Point): Map[Point,Integer] = {
 var m = Map[Point, Integer]()
 var p1 = Point(0, 0)
 var p2 = Point(0, 0)
-val filename = "input.txt"
+val filename = "input2.txt"
 var i = 1
 for (line <- Source.fromFile(filename).getLines) {
   for (c <- line) {
+    //m = updateMap(m, p1)
+    //p1 = p1.nextPoint(c)
     if ((i % 2) == 1) {
       m = updateMap(m, p1)
       println(i.toString + " p1 " + p1.toString + " " + c)
@@ -57,7 +60,7 @@ for (line <- Source.fromFile(filename).getLines) {
       println(i.toString + " p2 " + p2.toString + " " + c)
       p2 = p2.nextPoint(c)
     }
-    i += 1
+        i += 1
   }
 }
 if ((i % 2) == 1) {
