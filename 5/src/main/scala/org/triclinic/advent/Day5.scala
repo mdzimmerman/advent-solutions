@@ -51,23 +51,43 @@ object Day5 extends App {
     println("Total: %d".format(total))
   }
 
-  def part2(filename: String) = {
-    for (line <- Source.fromFile(filename).getLines) {
-      println(line)
-      val l = line.length
-      for (i <- (0 until l - 3)) {
-        print(line.substring(i, i + 2) + ": ")
-        for (j <- (i + 2 until l - 1)) {
-          print(line.substring(j, j + 2) + " ")
+  def part2rule1(s: String): Boolean = {
+    val len = s.length
+    for (i <- 0 until len-3) {
+      val a = s.substring(i, i+2)
+      //print(s"$a: ")
+      for (j <- i+2 until len-1) {
+        val b = s.substring(j, j+2)
+        //print(s"$b ")
+        if ( a == b ) {
+          //println("MATCH")
+          return true
         }
-        println()
       }
+      //println()
     }
+    false
+  }
+
+  def part2rule2(s: String): Boolean = {
+    s.toSeq.sliding(3).exists(x => x(0) == x(2))
+  }
+
+  def part2(filename: String) = {
+    var total = 0
+    for (line <- Source.fromFile(filename).getLines) {
+      val rule1 = part2rule1(line)
+      val rule2 = part2rule2(line)
+      val valid = rule1 && rule2
+      println(s"$line $rule1 $rule2 $valid")
+      if (valid) total += 1
+    }
+    println("Total: %d".format(total))
   }
 
   override def main(args: Array[String]): Unit = {
     //args.foreach(println(_))
-    //part1("input.txt")
+    //part1(args(0))
     part2(args(0))
   }
 }

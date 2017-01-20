@@ -2,6 +2,7 @@ import java.security.MessageDigest
 
 val md5 = MessageDigest.getInstance("MD5")
 val prefix = "iwrupvqb"
+//val prefix = "iwrupvqb"
 val stop = "000000"
 
 var n: Integer = 0

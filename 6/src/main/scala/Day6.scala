@@ -123,11 +123,18 @@ class IntArray {
 
 object Day6 extends App {
   override def main(args: Array[String]): Unit = {
-    val d = new IntArray
-    println(d.sum)
+    println("--- part 1 ---")
+    val d = new BoolArray
+    //println(d.countSet())
     if (args.length != 1)
       throw new IllegalArgumentException
     d.parseInputFile(args(0))
-    println(d.sum)
+    println(d.countSet())
+    println()
+
+    println("--- part 2 ---")
+    val d2 = new IntArray
+    d2.parseInputFile(args(0))
+    println(d2.sum)
   }
 }

@@ -59,7 +59,7 @@ object Day7 extends App {
   }
 
   //val rawInstructions = Source.fromURL(getClass.getResource("day7.txt")).getLines().toList
-  val textInstructions = Source.fromFile("input.txt").getLines().toList
+  val textInstructions = Source.fromFile("input2.txt").getLines().toList
 
   val instructions: Map[String, Expr] = parseInstructions(textInstructions)
 
@@ -68,7 +68,7 @@ object Day7 extends App {
   println(s"a (Part 1) = $a")
 
   // Part 2
-  //val newInstructions = instructions.updated("b", Const(a))
-  //val newA = evaluate(newInstructions, Variable("a"))
-  //println(s"a (Part 2) = $newA")
+  val newInstructions = instructions.updated("b", Const(a))
+  val newA = evaluate(newInstructions, Variable("a"))
+  println(s"a (Part 2) = $newA")
 }
