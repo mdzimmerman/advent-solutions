@@ -4,7 +4,11 @@ import scala.annotation.tailrec
   * Created by mzimmerman on 1/20/17.
   */
 
-def lookAndSay(s: String): String = lookAndSay(s.tail, s.head, 1, "")
+def lookAndSay(s: String): String = {
+  val t = lookAndSay(s.tail, s.head, 1, "")
+  println(t.length)
+  t
+}
 
 @tailrec
 def lookAndSay(s: Seq[Char], c0: Char, n: Int, out: String): String = {
@@ -19,11 +23,25 @@ def lookAndSay(s: Seq[Char], c0: Char, n: Int, out: String): String = {
   }
 }
 
-//def identity(s: String) = s
+def look(s: String) = s.foldLeft(List.empty[(Char,Int)]) {
+  case ((chr, count) :: tail, c) if chr == c => (chr, count+1) :: tail
+  case (xs, c) => (c, 1) :: xs
+}
+def say(c: Char, i: Int) = s"$i$c"
+
+def lookAndSay2(s: String) = {
+  val t = look(s).reverse.map((say _).tupled).mkString
+  println(t.length)
+  t
+}
+
+def dots(s: String): String = {
+  val t = s + "."
+  t
+}
 
 @tailrec
-def repeat(n: Int, input: String)(f: String => String): String = {
-  println(s"$n => ${input.length} => $input")
+def repeat[T](n: Int, input: T)(f: T => T): T = {
   if (n == 0) {
     input
   } else {
@@ -40,12 +58,14 @@ val test = List(
   "111221"
 )
 
-for (t <- test) println(s"$t -> ${lookAndSay(t)}")
+val conway = 1.303577269034
 
-repeat(5, "x")(x => x+".")
+repeat(5, "x")(dots)
+println()
 
-repeat(5, "1")(lookAndSay)
+repeat(5, "1")(lookAndSay2)
+println()
 
-repeat(20, "3113322113")(lookAndSay)
-//var s =
-//for (n <- 1 to 40)
+//repeat[Int](10, 329356)(x => (x * conway).toInt)
+
+repeat(50, "3113322113")(lookAndSay2)
