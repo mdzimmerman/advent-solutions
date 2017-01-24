@@ -16,7 +16,7 @@ city = {}
 n = 0
 c = np.zeros((8,8), dtype=np.int)
 
-f = "input.txt"
+f = "input2.txt"
 with open(f, "r") as fh:
     for l in fh:
         l = l.rstrip()
