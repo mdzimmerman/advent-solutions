@@ -5,7 +5,16 @@ import scala.collection.mutable
 
 object Turn extends Enumeration {
   type Turn = Value
-  val Hero, Boss = Value
+  val HeroEffect, Hero, BossEffect, Boss = Value
+
+  def next(turn: Turn): Turn = {
+    turn match {
+      case HeroEffect => Hero
+      case Hero => BossEffect
+      case BossEffect => Boss
+      case Boss => HeroEffect
+    }
+  }
 }
 
 object Result extends Enumeration {
@@ -19,35 +28,17 @@ case class Boss(totalHp: Int, damage: Int)
 case class State(hero: Hero,
                  boss: Boss,
                  turn: Turn.Turn,
-                 initHeroHp: Int,
-                 initHeroMana: Int,
-                 initHeroArmor: Int,
-                 initBossHp: Int,
-                 initShield: Int,
-                 initRecharge: Int,
-                 initPoison: Int,
+                 heroHp: Int,
+                 heroMana: Int,
+                 heroArmor: Int,
+                 bossHp: Int,
+                 shield: Int,
+                 recharge: Int,
+                 poison: Int,
                  last: String,
                  manaSpent: Int,
                  prev: Option[State],
                  hard: Int = 0) {
-
-  // apply all effects
-  val heroHp = initHeroHp - hard
-  val (heroMana, recharge) =
-    if (initRecharge > 0)
-      (initHeroMana+101, initRecharge-1)
-    else
-      (initHeroMana, 0)
-  val (heroArmor, shield) =
-    if (initShield > 0)
-      (hero.baseArmor+7, initShield-1)
-    else
-      (hero.baseArmor, 0)
-  val (bossHp, poison) =
-    if (initPoison > 0)
-      (initBossHp-3, initPoison-1)
-    else
-      (initBossHp, 0)
 
   // figure out if we won or lost or we have more moves
   lazy val (status, next) = {
@@ -57,8 +48,10 @@ case class State(hero: Hero,
       (Result.HeroWins, Nil)
     else {
       turn match {
+        case Turn.HeroEffect | Turn.BossEffect =>
+          (Result.Active, List(applyEffects))
         case Turn.Boss =>
-          (Result.Active, List(bossAttack()))
+          (Result.Active, List(bossAttack))
         case Turn.Hero =>
           castAll() match {
             case Nil =>
@@ -70,18 +63,27 @@ case class State(hero: Hero,
     }
   }
 
+  def applyEffects(): State = {
+    this.copy(
+      turn=Turn.next(turn),
+      heroHp=heroHp-hard,
+      heroMana=if (recharge > 0) heroMana+101 else heroMana,
+      heroArmor=if (shield > 0) hero.baseArmor+7 else hero.baseArmor,
+      bossHp=if (poison > 0) bossHp-3 else bossHp,
+      shield=if (shield > 0) shield-1 else 0,
+      recharge=if (recharge > 0) recharge-1 else 0,
+      poison=if (poison > 0) poison-1 else 0,
+      last="effect",
+      prev=Some(this))
+  }
+
   def castMissile(): Option[State] = {
     val cost = 53
     if (heroMana >= cost)
       Some(this.copy(
-        turn=Turn.Boss,
-        initHeroHp=heroHp,
-        initHeroMana=heroMana-cost,
-        initHeroArmor=heroArmor,
-        initBossHp=bossHp-4,
-        initShield=shield,
-        initRecharge=recharge,
-        initPoison=poison,
+        turn=Turn.next(turn),
+        heroMana=heroMana-cost,
+        bossHp=bossHp-4,
         last="missile",
         manaSpent=manaSpent+cost,
         prev=Some(this)))
@@ -93,14 +95,10 @@ case class State(hero: Hero,
     val cost = 73
     if (heroMana >= cost)
       Some(this.copy(
-        turn=Turn.Boss,
-        initHeroHp=heroHp+2,
-        initHeroMana=heroMana-cost,
-        initHeroArmor=heroArmor,
-        initBossHp=bossHp-2,
-        initShield=shield,
-        initRecharge=recharge,
-        initPoison=poison,
+        turn=Turn.next(turn),
+        heroHp=heroHp+2,
+        heroMana=heroMana-cost,
+        bossHp=bossHp-2,
         last="drain",
         manaSpent=manaSpent+cost,
         prev=Some(this)))
@@ -112,14 +110,9 @@ case class State(hero: Hero,
     val cost = 113
     if (heroMana >= cost && shield == 0)
       Some(this.copy(
-        turn=Turn.Boss,
-        initHeroHp=heroHp,
-        initHeroMana=heroMana-cost,
-        initHeroArmor=heroArmor,
-        initBossHp=bossHp,
-        initShield=6,
-        initRecharge=recharge,
-        initPoison=poison,
+        turn=Turn.next(turn),
+        heroMana=heroMana-cost,
+        shield=6,
         last="shield",
         manaSpent=manaSpent+cost,
         prev=Some(this)))
@@ -131,14 +124,9 @@ case class State(hero: Hero,
     val cost = 173
     if (heroMana >= cost && poison == 0)
       Some(this.copy(
-        turn=Turn.Boss,
-        initHeroHp=heroHp,
-        initHeroMana=heroMana-cost,
-        initHeroArmor=heroArmor,
-        initBossHp=bossHp,
-        initShield=shield,
-        initRecharge=recharge,
-        initPoison=6,
+        turn=Turn.next(turn),
+        heroMana=heroMana-cost,
+        poison=6,
         last="poison",
         manaSpent=manaSpent+cost,
         prev=Some(this)))
@@ -150,14 +138,9 @@ case class State(hero: Hero,
     val cost = 229
     if (heroMana >= cost && recharge == 0)
       Some(this.copy(
-        turn=Turn.Boss,
-        initHeroHp=heroHp,
-        initHeroMana=heroMana-cost,
-        initHeroArmor=heroArmor,
-        initBossHp=bossHp,
-        initShield=shield,
-        initRecharge=5,
-        initPoison=poison,
+        turn=Turn.next(turn),
+        heroMana=heroMana-cost,
+        recharge=5,
         last="recharge",
         manaSpent=manaSpent+cost,
         prev=Some(this)))
@@ -166,21 +149,14 @@ case class State(hero: Hero,
   }
 
   def castAll(): List[State] =
-    List(castMissile, castDrain(), castShield(), castPoison(), castRecharge()).flatten
-
+    List(castMissile, castDrain, castShield, castPoison, castRecharge).flatten
 
   def bossAttack(): State = {
     val dmg = List(boss.damage-heroArmor, 1).max
     this.copy(
-      turn=Turn.Hero,
-      initHeroHp=heroHp-dmg,
-      initHeroMana=heroMana,
-      initHeroArmor=heroArmor,
-      initBossHp=bossHp,
-      initShield=shield,
-      initRecharge=recharge,
-      initPoison=poison,
-      last="boss_attack",
+      turn=Turn.next(turn),
+      heroHp=heroHp-dmg,
+      last="boss",
       manaSpent=manaSpent,
       prev=Some(this))
   }
@@ -199,14 +175,14 @@ case class State(hero: Hero,
   }
 
   override def toString(): String =
-    s"State(turn=$turn " +
-      s"heroHp=$initHeroHp heroMana=$initHeroMana heroArmor=$initHeroArmor " +
-      s"recharge=$initRecharge shield=$initShield poison=$initPoison " +
-      s"bossHp=$initBossHp last=$last status=$status)"
+    f"State(turn=$turn%-10s " +
+      f"heroHp=$heroHp%2d heroMana=$heroMana%3d heroArmor=$heroArmor " +
+      f"recharge=$recharge shield=$shield poison=$poison " +
+      f"bossHp=$bossHp%2d last=$last%8s manaSpent=$manaSpent%4d status=$status)"
 }
 
 object State {
-  val queueOrdering = Ordering.by{ x: State => x.manaSpent }.reverse
+  val queueOrdering: Ordering[State] = Ordering.by{ x: State => x.manaSpent }.reverse
 
   def apply(hero: Hero, boss: Boss, hard: Int): State =
     State(hero, boss, Turn.Hero,
