@@ -50,5 +50,7 @@ println(generateAll("HOHOHO", s).size)
 val s2 = Source.fromFile("input.txt").getLines.flatMap(Subst.parse).toList
 println(s2)
 
-val text = Source.fromFile("input.txt").getLines.toList.tail
+val text = Source.fromFile("input.txt").getLines.toList.last
 println(text)
+
+println(generateAll(text, s2).size)
